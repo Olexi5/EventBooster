@@ -1,0 +1,25 @@
+{
+  "name": "eventbooster",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Olexi5/EventBooster",
+  "bugs": {
+    "url": "https://github.com/Olexi5/EventBooster/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Olexi5/EventBooster.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"parcel src/index.html",
+    "build":"parcel build src/index.html --public-url ./",
+    "deploy":"gh-pages -d dist"
+  },
+  "dependencies": {
+    "gh-pages": "^6.3.0",
+    "parcel": "^2.16.4"
+  }
+}
