@@ -714,6 +714,26 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 }
 
 },{}],"lhpGb":[function(require,module,exports,__globalThis) {
+var _getById = require("./getById");
+var _modal = require("./modal");
+(0, _getById.getById)("1A9Zk3dGkdpT2sm").then((d)=>(0, _modal.renderModal)(d));
+
+},{"./getById":"9Foj8","./modal":"jJ31c"}],"9Foj8":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getById", ()=>getById);
+const API_KEY = "SF9iTUj6nhCVPu2H1SEAypln081nKnA5";
+const BASE_URL = "https://app.ticketmaster.com/discovery/v2/";
+async function getById(id) {
+    try {
+        const params = await new URLSearchParams({
+            apikey: API_KEY
+        });
+        const data = await fetch(`${BASE_URL}/events/${id}?${params}`);
+        const resp = data.json();
+        return resp;
+    } catch (e) {
+        alert(e);
 var _fetchMain = require("./fetch-main");
 var _renderEvents = require("./render-events");
 const eventsContainer = document.querySelector(".events");
@@ -766,19 +786,34 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"fqy23":[function(require,module,exports,__globalThis) {
-// приймає масив
+},{}],"jJ31c":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "renderEvents", ()=>renderEvents);
-function renderEvents(array) {
-    const markUp = array.map((event)=>`<li data-id=${event.id} >
-        <img src="${event.images[0].url}" alt="${event.id}">
-        <h3>${event.name}</h3>
-        <p>${event.dates.start.localDate}</p>
-        <p>${event.dates.start.timeZone}</p>
-    </li>`).join("");
-    return markUp;
+parcelHelpers.export(exports, "renderModal", ()=>renderModal);
+const modal = document.querySelector(".modal-cont");
+function renderModal(event) {
+    modal.innerHTML = `<div class="backdrop">
+        <div class="modal">
+          <button type="button" class="close-btn">
+          </button>
+          <img src="${event.images[0].url}" alt="" class="modal-circle-img">
+          <div class="modal-wrap">
+        <img src="${event.images[0].url}" alt="" class="modal-full-img">
+        <div class="modal-descr">
+            <h3 class="modal-info">Info</h3>
+            <p class="modal-text">${event.info}</p>
+            <h3 class="modal-info">When</h3>
+             <p class="modal-text">${event.dates.start.localDate}</p>
+            <h3 class="modal-info">Where</h3>
+            <p class="modal-text">${event.dates.timezone}</p>
+            <h3 class="modal-info">Who</h3>
+            <p class="modal-text">${event.name}</p>
+            <a target="_blank" href="${event.url}" class="modal-buy">Buy tickets</a>
+        </div>
+    </div>
+    <a target="_blank" href="${event.url}" class="modal-more">More from this author</a>
+        </div>
+      </div>`;
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["93v64","lhpGb"], "lhpGb", "parcelRequire58e3", {})
