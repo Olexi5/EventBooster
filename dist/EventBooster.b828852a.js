@@ -714,7 +714,73 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 }
 
 },{}],"lhpGb":[function(require,module,exports,__globalThis) {
+var _fetchMain = require("./fetch-main");
+var _renderEvents = require("./render-events");
+const eventsContainer = document.querySelector(".events");
+(0, _fetchMain.getEvents)().then((data)=>eventsContainer.innerHTML = (0, _renderEvents.renderEvents)(data._embedded.events));
 
-},{}]},["93v64","lhpGb"], "lhpGb", "parcelRequire58e3", {})
+},{"./fetch-main":"azbub","./render-events":"fqy23"}],"azbub":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getEvents", ()=>getEvents) // _ebmedded
+;
+const API_KEY = "SF9iTUj6nhCVPu2H1SEAypln081nKnA5";
+const BASE_URL = "https://app.ticketmaster.com/discovery/v2/";
+async function getEvents() {
+    try {
+        const response = await fetch(`${BASE_URL}events.json?apikey=${API_KEY}`);
+        const data = response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"jnFvT":[function(require,module,exports,__globalThis) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule' || Object.prototype.hasOwnProperty.call(dest, key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"fqy23":[function(require,module,exports,__globalThis) {
+// приймає масив
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "renderEvents", ()=>renderEvents);
+function renderEvents(array) {
+    const markUp = array.map((event)=>`<li data-id=${event.id} >
+        <img src="${event.images[0].url}" alt="${event.id}">
+        <h3>${event.name}</h3>
+        <p>${event.dates.start.localDate}</p>
+        <p>${event.dates.start.timeZone}</p>
+    </li>`).join("");
+    return markUp;
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["93v64","lhpGb"], "lhpGb", "parcelRequire58e3", {})
 
 //# sourceMappingURL=EventBooster.b828852a.js.map
