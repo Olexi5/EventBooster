@@ -734,6 +734,25 @@ async function getById(id) {
         return resp;
     } catch (e) {
         alert(e);
+var _fetchMain = require("./fetch-main");
+var _renderEvents = require("./render-events");
+const eventsContainer = document.querySelector(".events");
+(0, _fetchMain.getEvents)().then((data)=>eventsContainer.innerHTML = (0, _renderEvents.renderEvents)(data._embedded.events));
+
+},{"./fetch-main":"azbub","./render-events":"fqy23"}],"azbub":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getEvents", ()=>getEvents) // _ebmedded
+;
+const API_KEY = "SF9iTUj6nhCVPu2H1SEAypln081nKnA5";
+const BASE_URL = "https://app.ticketmaster.com/discovery/v2/";
+async function getEvents() {
+    try {
+        const response = await fetch(`${BASE_URL}events.json?apikey=${API_KEY}`);
+        const data = response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
     }
 }
 
