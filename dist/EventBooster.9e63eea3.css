@@ -14,6 +14,10 @@ ul {
   overflow: hidden;
 }
 
+body {
+  margin: 0;
+}
+
 .backdrop {
   backdrop-filter: blur(3px);
   z-index: 100;
@@ -121,6 +125,34 @@ ul {
 .close-btn-img {
   width: 17px;
   height: 17px;
+}
+
+.title {
+  color: #dc56c5;
+  letter-spacing: 0%;
+  text-align: center;
+  width: 588px;
+  margin: 0 auto;
+  font-family: Montserrat, sans-serif;
+  font-size: 50px;
+  font-weight: 900;
+  line-height: 100%;
+}
+
+.first {
+  background-image: url("background.1b458517.png");
+  margin: 0;
+}
+
+.name, .country {
+  width: 270px;
+}
+
+.form {
+  gap: 30px;
+  width: 570px;
+  margin: 0 auto;
+  display: flex;
 }
 
 @media (width >= 768px) {

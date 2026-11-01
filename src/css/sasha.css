@@ -10,6 +10,9 @@ ul {
 .no-scroll {
   overflow: hidden;
 }
+body{
+    margin: 0;
+}
 .backdrop {
   position: fixed;
   top: 0;
@@ -24,8 +27,6 @@ ul {
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1),
     visibility 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-
 
 .modal {
   position: absolute;
@@ -114,8 +115,37 @@ ul {
   height: 17px;
 }
 
+.title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 900;
+  font-size: 50px;
+  color: #DC56C5;
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-align: center;
+  margin: 0 auto;
+  width: 588px;
+}
+.first{
+    margin: 0;
+    background-image: url(../background.png);
+}
+.name{
+    width: 270px;
+
+}
+.country{
+    width: 270px;
+}
+.form{
+    display: flex;
+    margin: 0 auto;
+    gap: 30px;
+    width: 570px;
+}
+
 @media (min-width: 768px) {
-    .modal {
+  .modal {
     padding: 28px 50px;
     width: 595px;
     border-top-left-radius: 300px;
@@ -129,7 +159,7 @@ ul {
     margin-left: 263px;
     margin-bottom: 43px;
   }
-  .modal-info{
+  .modal-info {
     margin-left: 0;
   }
   .modal-wrap {
