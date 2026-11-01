@@ -1,0 +1,27 @@
+.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.no-scroll {
+  overflow: hidden;
+}
+
+.modal {
+  background-color: #fff;
+  position: absolute;
+}
+
+.backdrop {
+  z-index: 100;
+  opacity: 1;
+  background-color: #0000002d;
+  width: 100vw;
+  height: 100vh;
+  transition: opacity .25s cubic-bezier(.4, 0, .2, 1), visibility .25s cubic-bezier(.4, 0, .2, 1);
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+/*# sourceMappingURL=EventBooster.9e63eea3.css.map */
