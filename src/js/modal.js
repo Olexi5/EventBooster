@@ -1,6 +1,6 @@
 const modal = document.querySelector(".modal-cont");
 export function renderModal(event) {
-  document.body.classList.add("no-scroll");
+  document.body.classList.toggle("no-scroll");
   modal.innerHTML = `<div class="backdrop">
         <div class="modal">
           <button class="close-btn"><svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -16,7 +16,7 @@ export function renderModal(event) {
             <h3 class="modal-info">When</h3>
              <p class="modal-text">${event.dates.start.localDate}</p>
             <h3 class="modal-info">Where</h3>
-            <p class="modal-text">${event.dates.timezone}</p>
+            <p class="modal-text">${event._embedded.venues[0].address.line1}, ${event._embedded.venues[0].city.name}</p>
             <h3 class="modal-info">Who</h3>
             <p class="modal-text">${event.name}</p>
             <a target="_blank" href="${event.url}" class="modal-buy">Buy tickets</a>

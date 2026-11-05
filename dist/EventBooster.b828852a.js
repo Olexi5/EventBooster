@@ -718,23 +718,30 @@ var _getById = require("./getById");
 var _modal = require("./modal");
 var _fetchMain = require("./fetch-main");
 var _renderEvents = require("./render-events");
+var _search = require("./search");
 const eventsContainer = document.querySelector(".events");
 const modal = document.querySelector(".modal-cont");
+const form = document.querySelector(".form");
+const name = document.querySelector(".name");
+const country = document.querySelector(".country");
 (0, _fetchMain.getEvents)().then((data)=>eventsContainer.innerHTML = (0, _renderEvents.renderEvents)(data._embedded.events));
 eventsContainer.addEventListener("click", (e)=>{
     const id = e.target.closest("li").dataset.id;
     (0, _getById.getById)(id).then((d)=>(0, _modal.renderModal)(d));
 });
-// Listen for clicks anywhere on the document (or a persistent parent container)
 modal.addEventListener("click", (e)=>{
     const closeBtn = e.target.closest(".close-btn");
     if (closeBtn) {
         modal.innerHTML = "";
-        document.body.classList.remove("no-scroll");
+        document.body.classList.toggle("no-scroll");
     }
 });
+form.addEventListener("input", (e)=>{
+    e.preventDefault();
+    (0, _search.searchEvents)(country.value, name.value).then((d)=>eventsContainer.innerHTML = (0, _renderEvents.renderEvents)(d._embedded.events));
+});
 
-},{"./getById":"9Foj8","./modal":"jJ31c","./fetch-main":"azbub","./render-events":"fqy23"}],"9Foj8":[function(require,module,exports,__globalThis) {
+},{"./getById":"9Foj8","./modal":"jJ31c","./fetch-main":"azbub","./render-events":"fqy23","./search":"2ZG6y"}],"9Foj8":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getById", ()=>getById);
@@ -789,7 +796,7 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "renderModal", ()=>renderModal);
 const modal = document.querySelector(".modal-cont");
 function renderModal(event) {
-    document.body.classList.add("no-scroll");
+    document.body.classList.toggle("no-scroll");
     modal.innerHTML = `<div class="backdrop">
         <div class="modal">
           <button class="close-btn"><svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -805,7 +812,7 @@ function renderModal(event) {
             <h3 class="modal-info">When</h3>
              <p class="modal-text">${event.dates.start.localDate}</p>
             <h3 class="modal-info">Where</h3>
-            <p class="modal-text">${event.dates.timezone}</p>
+            <p class="modal-text">${event._embedded.venues[0].address.line1}, ${event._embedded.venues[0].city.name}</p>
             <h3 class="modal-info">Who</h3>
             <p class="modal-text">${event.name}</p>
             <a target="_blank" href="${event.url}" class="modal-buy">Buy tickets</a>
@@ -843,9 +850,26 @@ function renderEvents(array) {
         <img src="${event.images[0].url}" alt="${event.id}">
         <h3>${event.name}</h3>
         <p>${event.dates.start.localDate}</p>
-        <p>${event.dates.start.timeZone}</p>
+        <p>${event.dates.timezone}</p>
     </li>`).join("");
     return markUp;
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"2ZG6y":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "searchEvents", ()=>searchEvents);
+const API_KEY = "SF9iTUj6nhCVPu2H1SEAypln081nKnA5";
+const BASE_URL = "https://app.ticketmaster.com/discovery/v2/";
+async function searchEvents(country, key) {
+    const params = new URLSearchParams({
+        countryCode: country,
+        apikey: API_KEY,
+        keyword: key
+    });
+    const resp = await fetch(`${BASE_URL}events.json?${params}`);
+    const data = resp.json();
+    return data;
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["93v64","lhpGb"], "lhpGb", "parcelRequire58e3", {})
