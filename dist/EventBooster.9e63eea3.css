@@ -15,6 +15,7 @@ ul {
 }
 
 body {
+  background-color: #0e0e0e;
   margin: 0;
 }
 
@@ -33,13 +34,14 @@ body {
 
 .modal {
   background-color: #fff2fd;
-  border-top-left-radius: 150px;
-  border-bottom-right-radius: 150px;
+  border-top-left-radius: 100px;
+  border-bottom-right-radius: 100px;
   width: 272px;
-  padding: 75px 12px;
+  padding: 45px 12px;
   position: absolute;
-  top: 300px;
-  left: 23px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .modal-circle-img {
@@ -131,38 +133,80 @@ body {
   color: #dc56c5;
   letter-spacing: 0%;
   text-align: center;
-  width: 588px;
-  margin: 0 auto;
+  width: 212px;
+  margin: 0 auto 25px;
   font-family: Montserrat, sans-serif;
-  font-size: 50px;
+  font-size: 18px;
   font-weight: 900;
   line-height: 100%;
 }
 
 .first {
-  background-image: url("background.1b458517.png");
+  background-image: linear-gradient(#0b0b0b80, #0e0e0ecc), url("background.1b458517.png");
+  background-position: center;
+  background-size: cover;
   margin: 0;
+  padding: 78px 25px 112px;
 }
 
 .name, .country {
+  color: #939393;
   width: 270px;
+  letter-spacing: 0%;
+  backdrop-filter: blur(20px);
+  background: #fff3;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 113px 10px 30px;
+  font-family: Montserrat, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 100%;
 }
 
 .form {
-  gap: 30px;
-  width: 570px;
-  margin: 0 auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
   display: flex;
 }
 
+.logo {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.logo-img {
+  width: 107px;
+}
+
 @media (width >= 768px) {
+  .title {
+    width: 353px;
+    margin-bottom: 27px;
+    font-size: 30px;
+  }
+
+  .first {
+    padding: 40px 99px 183px;
+  }
+
+  .logo-img {
+    width: 179px;
+  }
+
+  .form {
+    flex-direction: row;
+    gap: 30px;
+  }
+
   .modal {
-    border-top-left-radius: 300px;
-    border-bottom-right-radius: 300px;
+    border-top-left-radius: 200px;
+    border-bottom-right-radius: 200px;
     width: 595px;
     padding: 28px 50px;
-    top: 161px;
-    left: 86px;
   }
 
   .modal-circle-img {
@@ -192,13 +236,26 @@ body {
 }
 
 @media (width >= 1200px) {
+  .title {
+    text-align: center;
+    width: 598px;
+    margin-bottom: 52px;
+    font-size: 50px;
+  }
+
+  .first {
+    padding: 40px 355px 192px;
+  }
+
+  .logo-img {
+    width: 239px;
+  }
+
   .modal {
     border-top-left-radius: 300px;
     border-bottom-right-radius: 300px;
     width: 930px;
     padding: 42px 30px;
-    top: 30px;
-    left: 515px;
   }
 
   .modal-circle-img {
