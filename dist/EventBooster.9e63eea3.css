@@ -151,11 +151,98 @@ body {
   padding: 78px 25px 112px;
 }
 
+.country, ::picker(select) {
+  appearance: base-select;
+}
+
+label {
+  align-self: center;
+  width: fit-content;
+}
+
+select {
+  backdrop-filter: blur(20px);
+  background: #fff3;
+  border: none;
+  transition: all .4s;
+}
+
+select::picker-icon {
+  color: #939393;
+  transition: rotate .4s;
+}
+
+select:open::picker-icon {
+  rotate: 180deg;
+}
+
+::picker(select) {
+  border: none;
+}
+
+option {
+  backdrop-filter: blur(20px);
+  color: #939393;
+  letter-spacing: 0%;
+  background-color: #00000013;
+  border: none;
+  justify-content: flex-start;
+  gap: 20px;
+  padding: 10px;
+  font-family: Montserrat, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 100%;
+  transition: all .4s;
+  display: flex;
+}
+
+option:first-of-type {
+  border-radius: 8px 8px 0 0;
+}
+
+option:last-of-type {
+  border-radius: 0 0 8px 8px;
+}
+
+::picker(select) {
+  border-radius: 8px;
+}
+
+option:not(option:last-of-type) {
+  border-bottom: none;
+}
+
+option:hover, option:focus {
+  color: #303030;
+  background: #f1c2ea;
+}
+
+option .icon {
+  text-box: trim-both cap alphabetic;
+  font-size: 1.6rem;
+}
+
+option::checkmark {
+  order: 1;
+  margin-left: auto;
+}
+
+::picker(select) {
+  opacity: 0;
+  transition: all .4s allow-discrete;
+}
+
+:open::picker(select) {
+  opacity: 1;
+}
+
 .name, .country {
   color: #939393;
   width: 270px;
   letter-spacing: 0%;
   backdrop-filter: blur(20px);
+  z-index: 10;
   background: #fff3;
   border: none;
   border-radius: 20px;
