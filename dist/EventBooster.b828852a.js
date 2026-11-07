@@ -724,9 +724,39 @@ const modal = document.querySelector(".modal-cont");
 const form = document.querySelector(".form");
 const name = document.querySelector(".name");
 const country = document.querySelector(".country");
-(0, _fetchMain.getEvents)().then((data)=>eventsContainer.innerHTML = (0, _renderEvents.renderEvents)(data._embedded.events));
+const prevBtn = document.querySelector(".btn-prev");
+const nextBtn = document.querySelector(".btn-next");
+const paginationScale = document.querySelector(".pagination-scale-text");
+let page = 0;
+let totalPages = 0;
+async function loadEvents() {
+    const data = await (0, _fetchMain.getEvents)(page);
+    if (!data) return;
+    totalPages = data.page.totalPages;
+    eventsContainer.innerHTML = (0, _renderEvents.renderEvents)(data._embedded.events);
+    paginationScale.textContent = `${page + 1} / ${totalPages}`;
+    prevBtn.classList.toggle("btn-locked", page === 0);
+    nextBtn.classList.toggle("btn-locked", page >= totalPages - 1);
+}
+prevBtn.addEventListener("click", (e)=>{
+    e.preventDefault();
+    if (page > 0) {
+        page -= 1;
+        loadEvents();
+    }
+});
+nextBtn.addEventListener("click", (e)=>{
+    e.preventDefault();
+    if (page < totalPages - 1) {
+        page += 1;
+        loadEvents();
+    }
+});
+loadEvents();
 eventsContainer.addEventListener("click", (e)=>{
-    const id = e.target.closest("li").dataset.id;
+    const item = e.target.closest("li");
+    if (!item) return;
+    const id = item.dataset.id;
     (0, _getById.getById)(id).then((d)=>(0, _modal.renderModal)(d));
 });
 modal.addEventListener("click", (e)=>{
@@ -738,25 +768,30 @@ modal.addEventListener("click", (e)=>{
 });
 form.addEventListener("input", (e)=>{
     e.preventDefault();
-    (0, _search.searchEvents)(country.value, name.value).then((d)=>eventsContainer.innerHTML = (0, _renderEvents.renderEvents)(d._embedded.events));
+    (0, _search.searchEvents)(country.value, name.value).then((d)=>{
+        eventsContainer.innerHTML = (0, _renderEvents.renderEvents)(d._embedded.events);
+    });
 });
 
-},{"./getById":"9Foj8","./modal":"jJ31c","./fetch-main":"azbub","./render-events":"fqy23","./search":"2ZG6y"}],"9Foj8":[function(require,module,exports,__globalThis) {
+},{"./fetch-main":"azbub","./render-events":"fqy23","./getById":"9Foj8","./modal":"jJ31c","./search":"2ZG6y"}],"azbub":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "getById", ()=>getById);
+parcelHelpers.export(exports, "getEvents", ()=>getEvents);
 const API_KEY = "SF9iTUj6nhCVPu2H1SEAypln081nKnA5";
 const BASE_URL = "https://app.ticketmaster.com/discovery/v2/";
-async function getById(id) {
+async function getEvents(page = 0) {
     try {
-        const params = await new URLSearchParams({
+        const searchParams = new URLSearchParams({
+            size: 20,
+            page: page,
             apikey: API_KEY
         });
-        const data = await fetch(`${BASE_URL}/events/${id}?${params}`);
-        const resp = data.json();
-        return resp;
-    } catch (e) {
-        alert(e);
+        const response = await fetch(`${BASE_URL}events.json?${searchParams}`);
+        if (!response.ok) throw new Error("\u041F\u043E\u043C\u0438\u043B\u043A\u0430 \u0437\u0430\u0432\u0430\u043D\u0442\u0430\u0436\u0435\u043D\u043D\u044F \u0456\u043D\u0444\u043E\u0440\u043C\u0430\u0446\u0456\u0457");
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
     }
 }
 
@@ -790,7 +825,41 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"jJ31c":[function(require,module,exports,__globalThis) {
+},{}],"fqy23":[function(require,module,exports,__globalThis) {
+// приймає масив
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "renderEvents", ()=>renderEvents);
+function renderEvents(array) {
+    const markUp = array.map((event)=>`<li data-id=${event.id} class="list-item">
+        <img src="${event.images[0].url}" alt="${event.id}" class="list-item-img">
+        <h3 class="list-item-title">${event.name}</h3>
+        <p class="list-item-description-date">${event.dates.start.localDate}</p>
+        <p class="list-item-description-place">${event._embedded.venues[0].city.name}</p>
+    </li>`).join("");
+    return markUp;
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"9Foj8":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getById", ()=>getById);
+const API_KEY = "SF9iTUj6nhCVPu2H1SEAypln081nKnA5";
+const BASE_URL = "https://app.ticketmaster.com/discovery/v2/";
+async function getById(id) {
+    try {
+        const params = await new URLSearchParams({
+            apikey: API_KEY
+        });
+        const data = await fetch(`${BASE_URL}/events/${id}?${params}`);
+        const resp = data.json();
+        return resp;
+    } catch (e) {
+        alert(e);
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"jJ31c":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "renderModal", ()=>renderModal);
@@ -821,38 +890,6 @@ function renderModal(event) {
     <a target="_blank" href="${event.url}" class="modal-more">More from this author</a>
         </div>
       </div>`;
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"azbub":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "getEvents", ()=>getEvents) // _ebmedded
-;
-const API_KEY = "SF9iTUj6nhCVPu2H1SEAypln081nKnA5";
-const BASE_URL = "https://app.ticketmaster.com/discovery/v2/";
-async function getEvents() {
-    try {
-        const response = await fetch(`${BASE_URL}events.json?apikey=${API_KEY}`);
-        const data = response.json();
-        return data;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"fqy23":[function(require,module,exports,__globalThis) {
-// приймає масив
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "renderEvents", ()=>renderEvents);
-function renderEvents(array) {
-    const markUp = array.map((event)=>`<li data-id=${event.id} >
-        <img src="${event.images[0].url}" alt="${event.id}">
-        <h3>${event.name}</h3>
-        <p>${event.dates.start.localDate}</p>
-        <p>${event.dates.timezone}</p>
-    </li>`).join("");
-    return markUp;
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"2ZG6y":[function(require,module,exports,__globalThis) {
