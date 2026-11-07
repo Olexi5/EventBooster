@@ -139,6 +139,87 @@ body {
   background-position: center;
   padding: 78px 25px 112px;
 }
+
+
+
+.country,
+::picker(select) {
+  appearance: base-select;
+}
+label {
+  width: fit-content;
+  align-self: center;
+}
+select {
+  border: none;
+  background: #ffffff33;
+  backdrop-filter: blur(20px);
+  transition: 0.4s;
+}
+select::picker-icon {
+  color: #939393;
+  transition: 0.4s rotate;
+}
+select:open::picker-icon {
+  rotate: 180deg;
+}
+::picker(select) {
+  border: none;
+}
+option {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+
+  background-color: rgba(0, 0, 0, 0.075);
+  backdrop-filter: blur(20px);
+  border: none;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #939393;
+  line-height: 100%;
+  letter-spacing: 0%;
+  padding: 10px;
+  transition: 0.4s;
+}
+option:first-of-type {
+  border-radius: 8px 8px 0 0;
+}
+
+option:last-of-type {
+  border-radius: 0 0 8px 8px;
+}
+
+::picker(select) {
+  border-radius: 8px;
+}
+
+option:not(option:last-of-type) {
+  border-bottom: none;
+}
+
+option:hover,
+option:focus {
+  background: #f1c2ea;
+  color: #303030;
+
+}
+option .icon {
+  font-size: 1.6rem;
+  text-box: trim-both cap alphabetic;
+}
+option::checkmark {
+  order: 1;
+  margin-left: auto;
+}
+::picker(select) {
+  opacity: 0;
+  transition: all 0.4s allow-discrete;
+}
+:open::picker(select) {
+  opacity: 1;
+}
 .name,
 .country {
   width: 270px;
@@ -153,7 +234,9 @@ body {
   backdrop-filter: blur(20px);
   border: none;
   border-radius: 20px;
+  z-index: 10;
 }
+
 .form {
   display: flex;
   flex-direction: column;
