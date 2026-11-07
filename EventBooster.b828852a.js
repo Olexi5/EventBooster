@@ -714,7 +714,164 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 }
 
 },{}],"lhpGb":[function(require,module,exports,__globalThis) {
+var _getById = require("./getById");
+var _modal = require("./modal");
+var _fetchMain = require("./fetch-main");
+var _renderEvents = require("./render-events");
+var _search = require("./search");
+const eventsContainer = document.querySelector(".events");
+const modal = document.querySelector(".modal-cont");
+const form = document.querySelector(".form");
+const name = document.querySelector(".name");
+const country = document.querySelector(".country");
+(0, _fetchMain.getEvents)().then((data)=>eventsContainer.innerHTML = (0, _renderEvents.renderEvents)(data._embedded.events));
+eventsContainer.addEventListener("click", (e)=>{
+    const id = e.target.closest("li").dataset.id;
+    (0, _getById.getById)(id).then((d)=>(0, _modal.renderModal)(d));
+});
+modal.addEventListener("click", (e)=>{
+    const closeBtn = e.target.closest(".close-btn");
+    if (closeBtn) {
+        modal.innerHTML = "";
+        document.body.classList.toggle("no-scroll");
+    }
+});
+form.addEventListener("input", (e)=>{
+    e.preventDefault();
+    (0, _search.searchEvents)(country.value, name.value).then((d)=>eventsContainer.innerHTML = (0, _renderEvents.renderEvents)(d._embedded.events));
+});
 
-},{}]},["93v64","lhpGb"], "lhpGb", "parcelRequire58e3", {})
+},{"./getById":"9Foj8","./modal":"jJ31c","./fetch-main":"azbub","./render-events":"fqy23","./search":"2ZG6y"}],"9Foj8":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getById", ()=>getById);
+const API_KEY = "SF9iTUj6nhCVPu2H1SEAypln081nKnA5";
+const BASE_URL = "https://app.ticketmaster.com/discovery/v2/";
+async function getById(id) {
+    try {
+        const params = await new URLSearchParams({
+            apikey: API_KEY
+        });
+        const data = await fetch(`${BASE_URL}/events/${id}?${params}`);
+        const resp = data.json();
+        return resp;
+    } catch (e) {
+        alert(e);
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"jnFvT":[function(require,module,exports,__globalThis) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule' || Object.prototype.hasOwnProperty.call(dest, key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"jJ31c":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "renderModal", ()=>renderModal);
+const modal = document.querySelector(".modal-cont");
+function renderModal(event) {
+    document.body.classList.toggle("no-scroll");
+    modal.innerHTML = `<div class="backdrop">
+        <div class="modal">
+          <button class="close-btn"><svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1.28557 25C0.95625 25 0.626931 24.8747 0.376724 24.6227C-0.125574 24.1204 -0.125574 23.306 0.376724 22.8038L22.8043 0.376714C23.3066 -0.125571 24.121 -0.125571 24.6233 0.376714C25.1256 0.878999 25.1256 1.69333 24.6233 2.19593L2.19598 24.6227C1.94389 24.8732 1.61457 25 1.28557 25V25Z" fill="#4C00FE"/>
+<path d="M23.7147 25C23.3854 25 23.0564 24.8747 22.8059 24.6227L0.376724 2.19593C-0.125574 1.69333 -0.125574 0.878999 0.376724 0.376714C0.879022 -0.125571 1.69337 -0.125571 2.19598 0.376714L24.6233 22.8038C25.1256 23.306 25.1256 24.1204 24.6233 24.6227C24.3712 24.8732 24.0422 25 23.7147 25Z" fill="#4C00FE"/>
+</svg></button>
+          <img src="${event.images[0].url}" alt="" class="modal-circle-img">
+          <div class="modal-wrap">
+        <img src="${event.images[0].url}" alt="" class="modal-full-img">
+        <div class="modal-descr">
+            <h3 class="modal-info">Info</h3>
+            <p class="modal-text">${event.pleaseNote}</p>
+            <h3 class="modal-info">When</h3>
+             <p class="modal-text">${event.dates.start.localDate}</p>
+            <h3 class="modal-info">Where</h3>
+            <p class="modal-text">${event._embedded.venues[0].address.line1}, ${event._embedded.venues[0].city.name}</p>
+            <h3 class="modal-info">Who</h3>
+            <p class="modal-text">${event.name}</p>
+            <a target="_blank" href="${event.url}" class="modal-buy">Buy tickets</a>
+        </div>
+    </div>
+    <a target="_blank" href="${event.url}" class="modal-more">More from this author</a>
+        </div>
+      </div>`;
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"azbub":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getEvents", ()=>getEvents) // _ebmedded
+;
+const API_KEY = "SF9iTUj6nhCVPu2H1SEAypln081nKnA5";
+const BASE_URL = "https://app.ticketmaster.com/discovery/v2/";
+async function getEvents() {
+    try {
+        const response = await fetch(`${BASE_URL}events.json?apikey=${API_KEY}`);
+        const data = response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"fqy23":[function(require,module,exports,__globalThis) {
+// приймає масив
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "renderEvents", ()=>renderEvents);
+function renderEvents(array) {
+    const markUp = array.map((event)=>`<li data-id=${event.id} >
+        <img src="${event.images[0].url}" alt="${event.id}">
+        <h3>${event.name}</h3>
+        <p>${event.dates.start.localDate}</p>
+        <p>${event.dates.timezone}</p>
+    </li>`).join("");
+    return markUp;
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"2ZG6y":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "searchEvents", ()=>searchEvents);
+const API_KEY = "SF9iTUj6nhCVPu2H1SEAypln081nKnA5";
+const BASE_URL = "https://app.ticketmaster.com/discovery/v2/";
+async function searchEvents(country, key) {
+    const params = new URLSearchParams({
+        countryCode: country,
+        apikey: API_KEY,
+        keyword: key
+    });
+    const resp = await fetch(`${BASE_URL}events.json?${params}`);
+    const data = resp.json();
+    return data;
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["93v64","lhpGb"], "lhpGb", "parcelRequire58e3", {})
 
 //# sourceMappingURL=EventBooster.b828852a.js.map
