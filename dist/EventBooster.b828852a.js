@@ -718,7 +718,6 @@ var _getById = require("./getById");
 var _modal = require("./modal");
 var _fetchMain = require("./fetch-main");
 var _renderEvents = require("./render-events");
-var _search = require("./search");
 const eventsContainer = document.querySelector(".events");
 const modal = document.querySelector(".modal-cont");
 const form = document.querySelector(".form");
@@ -729,8 +728,9 @@ const nextBtn = document.querySelector(".btn-next");
 const paginationScale = document.querySelector(".pagination-scale-text");
 let page = 0;
 let totalPages = 0;
-async function loadEvents() {
-    const data = await (0, _fetchMain.getEvents)(page);
+async function loadEvents(country, name) {
+    const data = await (0, _fetchMain.getEvents)(page, country, name);
+    console.log(country, name);
     if (!data) return;
     totalPages = data.page.totalPages;
     eventsContainer.innerHTML = (0, _renderEvents.renderEvents)(data._embedded.events);
@@ -742,17 +742,17 @@ prevBtn.addEventListener("click", (e)=>{
     e.preventDefault();
     if (page > 0) {
         page -= 1;
-        loadEvents();
+        loadEvents(country.value, name.value);
     }
 });
 nextBtn.addEventListener("click", (e)=>{
     e.preventDefault();
     if (page < totalPages - 1) {
         page += 1;
-        loadEvents();
+        loadEvents(country.value, name.value);
     }
 });
-loadEvents();
+loadEvents(country.value, name.value);
 eventsContainer.addEventListener("click", (e)=>{
     const item = e.target.closest("li");
     if (!item) return;
@@ -768,30 +768,25 @@ modal.addEventListener("click", (e)=>{
 });
 form.addEventListener("input", (e)=>{
     e.preventDefault();
-    (0, _search.searchEvents)(country.value, name.value).then((d)=>{
-        eventsContainer.innerHTML = (0, _renderEvents.renderEvents)(d._embedded.events);
-    });
+    loadEvents(country.value, name.value);
 });
 
-},{"./fetch-main":"azbub","./render-events":"fqy23","./getById":"9Foj8","./modal":"jJ31c","./search":"2ZG6y"}],"azbub":[function(require,module,exports,__globalThis) {
+},{"./getById":"9Foj8","./modal":"jJ31c","./fetch-main":"azbub","./render-events":"fqy23"}],"9Foj8":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "getEvents", ()=>getEvents);
+parcelHelpers.export(exports, "getById", ()=>getById);
 const API_KEY = "SF9iTUj6nhCVPu2H1SEAypln081nKnA5";
 const BASE_URL = "https://app.ticketmaster.com/discovery/v2/";
-async function getEvents(page = 0) {
+async function getById(id) {
     try {
-        const searchParams = new URLSearchParams({
-            size: 20,
-            page: page,
+        const params = await new URLSearchParams({
             apikey: API_KEY
         });
-        const response = await fetch(`${BASE_URL}events.json?${searchParams}`);
-        if (!response.ok) throw new Error("\u041F\u043E\u043C\u0438\u043B\u043A\u0430 \u0437\u0430\u0432\u0430\u043D\u0442\u0430\u0436\u0435\u043D\u043D\u044F \u0456\u043D\u0444\u043E\u0440\u043C\u0430\u0446\u0456\u0457");
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error(error);
+        const data = await fetch(`${BASE_URL}/events/${id}?${params}`);
+        const resp = data.json();
+        return resp;
+    } catch (e) {
+        alert(e);
     }
 }
 
@@ -825,41 +820,7 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"fqy23":[function(require,module,exports,__globalThis) {
-// приймає масив
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "renderEvents", ()=>renderEvents);
-function renderEvents(array) {
-    const markUp = array.map((event)=>`<li data-id=${event.id} class="list-item">
-        <img src="${event.images[0].url}" alt="${event.id}" class="list-item-img">
-        <h3 class="list-item-title">${event.name}</h3>
-        <p class="list-item-description-date">${event.dates.start.localDate}</p>
-        <p class="list-item-description-place">${event._embedded.venues[0].city.name}</p>
-    </li>`).join("");
-    return markUp;
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"9Foj8":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "getById", ()=>getById);
-const API_KEY = "SF9iTUj6nhCVPu2H1SEAypln081nKnA5";
-const BASE_URL = "https://app.ticketmaster.com/discovery/v2/";
-async function getById(id) {
-    try {
-        const params = await new URLSearchParams({
-            apikey: API_KEY
-        });
-        const data = await fetch(`${BASE_URL}/events/${id}?${params}`);
-        const resp = data.json();
-        return resp;
-    } catch (e) {
-        alert(e);
-    }
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"jJ31c":[function(require,module,exports,__globalThis) {
+},{}],"jJ31c":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "renderModal", ()=>renderModal);
@@ -892,21 +853,43 @@ function renderModal(event) {
       </div>`;
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"2ZG6y":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"azbub":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "searchEvents", ()=>searchEvents);
+parcelHelpers.export(exports, "getEvents", ()=>getEvents);
 const API_KEY = "SF9iTUj6nhCVPu2H1SEAypln081nKnA5";
 const BASE_URL = "https://app.ticketmaster.com/discovery/v2/";
-async function searchEvents(country, key) {
-    const params = new URLSearchParams({
-        countryCode: country,
-        apikey: API_KEY,
-        keyword: key
-    });
-    const resp = await fetch(`${BASE_URL}events.json?${params}`);
-    const data = resp.json();
-    return data;
+async function getEvents(page = 0, country, key) {
+    try {
+        const searchParams = new URLSearchParams({
+            size: 20,
+            page: page,
+            apikey: API_KEY,
+            countryCode: country,
+            keyword: key
+        });
+        const response = await fetch(`${BASE_URL}events.json?${searchParams}`);
+        if (!response.ok) throw new Error("\u041F\u043E\u043C\u0438\u043B\u043A\u0430 \u0437\u0430\u0432\u0430\u043D\u0442\u0430\u0436\u0435\u043D\u043D\u044F \u0456\u043D\u0444\u043E\u0440\u043C\u0430\u0446\u0456\u0457");
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"fqy23":[function(require,module,exports,__globalThis) {
+// приймає масив
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "renderEvents", ()=>renderEvents);
+function renderEvents(array) {
+    const markUp = array.map((event)=>`<li data-id=${event.id} class="list-item">
+        <img src="${event.images[0].url}" alt="${event.id}" class="list-item-img">
+        <h3 class="list-item-title">${event.name}</h3>
+        <p class="list-item-description-date">${event.dates.start.localDate}</p>
+        <p class="list-item-description-place">${event._embedded.venues[0].city.name}</p>
+    </li>`).join("");
+    return markUp;
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["93v64","lhpGb"], "lhpGb", "parcelRequire58e3", {})

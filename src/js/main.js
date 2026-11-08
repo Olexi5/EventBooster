@@ -2,7 +2,6 @@ import { getById } from "./getById";
 import { renderModal } from "./modal";
 import { getEvents } from "./fetch-main";
 import { renderEvents } from "./render-events";
-import { searchEvents } from "./search";
 
 const eventsContainer = document.querySelector(".events");
 const modal = document.querySelector(".modal-cont");
@@ -17,9 +16,9 @@ const paginationScale = document.querySelector(".pagination-scale-text");
 let page = 0;
 let totalPages = 0;
 
-async function loadEvents() {
-    const data = await getEvents(page);
-
+async function loadEvents(country, name) {
+    const data = await getEvents(page, country, name);
+console.log(country, name)
     if (!data) return;
 
     totalPages = data.page.totalPages;
@@ -37,7 +36,7 @@ prevBtn.addEventListener("click", (e) => {
 
     if (page > 0) {
         page -= 1;
-        loadEvents();
+        loadEvents(country.value, name.value);
     }
 });
 
@@ -46,11 +45,11 @@ nextBtn.addEventListener("click", (e) => {
 
     if (page < totalPages - 1) {
         page += 1;
-        loadEvents();
+        loadEvents(country.value, name.value);
     }
 });
 
-loadEvents();
+loadEvents(country.value, name.value);
 
 
 eventsContainer.addEventListener("click", (e) => {
@@ -75,7 +74,5 @@ modal.addEventListener("click", (e) => {
 form.addEventListener("input", (e) => {
     e.preventDefault();
 
-    searchEvents(country.value, name.value).then((d) => {
-        eventsContainer.innerHTML = renderEvents(d._embedded.events)
-    });
+    loadEvents(country.value, name.value);
 });
