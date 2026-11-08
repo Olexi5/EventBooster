@@ -76,6 +76,6 @@ form.addEventListener("input", (e) => {
     e.preventDefault();
 
     searchEvents(country.value, name.value).then((d) => {
-        eventsContainer.innerHTML = renderEvents(d._embedded.events);
+        eventsContainer.innerHTML = renderEvents(d._embedded.events)
     });
 });
