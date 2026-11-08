@@ -6,28 +6,76 @@ import { searchEvents } from "./search";
 
 const eventsContainer = document.querySelector(".events");
 const modal = document.querySelector(".modal-cont");
-const form= document.querySelector(".form")
-const name=document.querySelector(".name")
+const form = document.querySelector(".form");
+const name = document.querySelector(".name");
 const country = document.querySelector(".country");
 
-getEvents().then(
-  (data) => (eventsContainer.innerHTML = renderEvents(data._embedded.events)),
-);
+const prevBtn = document.querySelector(".btn-prev");
+const nextBtn = document.querySelector(".btn-next");
+const paginationScale = document.querySelector(".pagination-scale-text");
+
+let page = 0;
+let totalPages = 0;
+
+async function loadEvents() {
+    const data = await getEvents(page);
+
+    if (!data) return;
+
+    totalPages = data.page.totalPages;
+
+    eventsContainer.innerHTML = renderEvents(data._embedded.events);
+
+    paginationScale.textContent = `${page + 1} / ${totalPages}`;
+
+    prevBtn.classList.toggle("btn-locked", page === 0);
+    nextBtn.classList.toggle("btn-locked", page >= totalPages - 1);
+}
+
+prevBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    if (page > 0) {
+        page -= 1;
+        loadEvents();
+    }
+});
+
+nextBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    if (page < totalPages - 1) {
+        page += 1;
+        loadEvents();
+    }
+});
+
+loadEvents();
+
 
 eventsContainer.addEventListener("click", (e) => {
-  const id = e.target.closest("li").dataset.id;
-  getById(id).then((d) => renderModal(d));
+    const item = e.target.closest("li");
+
+    if (!item) return;
+
+    const id = item.dataset.id;
+
+    getById(id).then((d) => renderModal(d));
 });
 
 modal.addEventListener("click", (e) => {
-  const closeBtn = e.target.closest(".close-btn");
-if (closeBtn) {
-    modal.innerHTML = "";
-    document.body.classList.toggle("no-scroll")
-  }
+    const closeBtn = e.target.closest(".close-btn");
+
+    if (closeBtn) {
+        modal.innerHTML = "";
+        document.body.classList.toggle("no-scroll");
+    }
 });
 
-form.addEventListener("input", (e)=>{
-  e.preventDefault()
-  searchEvents(country.value, name.value).then(d=>eventsContainer.innerHTML = renderEvents(d._embedded.events))
-})
+form.addEventListener("input", (e) => {
+    e.preventDefault();
+
+    searchEvents(country.value, name.value).then((d) => {
+        eventsContainer.innerHTML = renderEvents(d._embedded.events);
+    });
+});
